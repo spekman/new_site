@@ -1,0 +1,51 @@
+* {
+  box-sizing: border-box;
+
+  image-rendering: pixelated;
+}
+
+.desktop {
+  position: relative;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: teal;
+  overflow: hidden;
+}
+
+.desktop-icons {
+  display: grid;
+  grid-template-columns: 64px;
+  gap: 8px;
+  padding: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+.game-frame {
+  width: 320px;
+  height: 320px;
+  aspect-ratio: 1/1;
+  border: none;
+  image-rendering: pixelated;
+}
+
+.contain {
+  max-width: 210px;
+  max-height: 320px;
+  white-space: pre-wrap;
+  text-align: center;
+  overflow-y: scroll;
+  padding-right: 10px;
+}
+
+.contain ul {
+  justify-items: flex-start;
+}
+
+.contain img {
+  float: left;
+  height: 60px;
+}
