@@ -11,6 +11,7 @@ app.use(cors({
   origin: 'https://spekman.github.io',
   credentials: true,
 }));
+app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'));
