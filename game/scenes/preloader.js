@@ -5,7 +5,7 @@ export default class Preloader extends Phaser.Scene {
 
     preload() {
         // FONTS
-        this.load.setPath('/game/assets/');
+        this.load.setPath('/new_site/game/assets/');
         this.load.bitmapFont('Anakron', 'fonts/anakron_0.png', 'fonts/anakron.fnt');
         this.load.bitmapFont('Spleen', 'fonts/spleen_0.png', 'fonts/spleen.fnt');
         
