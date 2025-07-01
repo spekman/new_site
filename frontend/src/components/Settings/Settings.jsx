@@ -11,7 +11,7 @@ export default function Settings({ onClose, applySettings }) {
       filter: filter ? 'on' : 'off',
     }).toString();
 
-    applySettings(`/game/index.html?${query}`);
+    applySettings(`/new_site/game/index.html?${query}`);
     onClose(); // close the settings window
   };
 

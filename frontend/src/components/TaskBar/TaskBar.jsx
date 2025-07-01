@@ -14,7 +14,7 @@ return (
 
   </div>
   <button className="start-button" onClick={toggleMenu}>
-    <img src="/assets/windows.png" alt="Start" />
+    <img src="assets/windows.png" alt="Start" />
     <span>Start</span>
   </button>
 

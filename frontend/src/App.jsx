@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import './styles/App.css'
 
 export default function App() {
-  const [gameUrl, setGameUrl] = useState('/game/index.html');
+  const [gameUrl, setGameUrl] = useState('/new_site/game/index.html');
   const [showSettings, setShowSettings] = useState(false);
   const [showGame, setShowGame] = useState(true);
   const [showAbout, setShowAbout] = useState(true);
@@ -16,10 +16,10 @@ export default function App() {
 
 
   const icons = [
-    { label: 'new game', icon: '/assets/favicon.png', action: () => setShowGame(true) },
-    { label: 'game config', icon: '/assets/accessibility.png', action: () => setShowSettings(true) },
-    { label: 'about', icon: '/assets/notepad.png', action: () => setShowAbout(true) },
-    { label: 'leaderboard', icon: '/assets/leaderboard.png', action: () => setShowLeaderboard(true) }
+    { label: 'new game', icon: 'assets/favicon.png', action: () => setShowGame(true) },
+    { label: 'game config', icon: 'assets/accessibility.png', action: () => setShowSettings(true) },
+    { label: 'about', icon: 'assets/notepad.png', action: () => setShowAbout(true) },
+    { label: 'leaderboard', icon: 'assets/leaderboard.png', action: () => setShowLeaderboard(true) }
   ];
 
 
@@ -83,7 +83,7 @@ export default function App() {
       {showAbout && (
         <Window title='about' onClose={() => setShowAbout(false)} style={{ transform: 'translate(850px, 50px)' }}>
           <div className="contain">
-            <img src='/assets/pochitchi.webp'/>
+            <img src='assets/pochitchi.webp'/>
           <p>This website was made using react. The leaderboard's database was made with mongodb atlas,
             with the backend hosted on railway.
             The game was made in Phaser! Most of the sprites were made by me
@@ -131,6 +131,7 @@ export default function App() {
               <li>add webpage</li>
               <li>guestbook??</li>
               <li>make leaderboard look better</li>
+              <li>better  taskbar</li>
             </ul>
 
           <p>version 1 . 0</p>
