@@ -7,7 +7,7 @@ export default function Leaderboard() {
   const [scores, setScores] = useState([]);
   const topScores = scores.slice(0, 10); // Only top 10
   useEffect(() => {
-    fetch('https://your-backend-url.com/api/scores')
+    fetch('https://newsite-production-bdad.up.railway.app/api/scores')
       .then(res => res.json())
       .then(data => setScores(data));
   }, []);
