@@ -171,7 +171,7 @@ export default class GameOver extends Phaser.Scene {
         localStorage.setItem('scores', JSON.stringify(scores.slice(0, 7)));
 
         // Send to backend
-        fetch('https://your-api.example.com/api/scores', {
+        fetch('https://newsite-production-bdad.up.railway.app/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: this.username, score: this.finalScore })
