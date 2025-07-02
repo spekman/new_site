@@ -1,7 +1,7 @@
 import CONFIG from '../config.js';
 import Player from '../classes/player.js';
 import Bullet from '../classes/bullet.js';
-import Enemy, { Bunny, UFO, Clefairy } from '../classes/enemy.js';
+import Enemy, { Bunny, UFO, Clefairy, Reimu } from '../classes/enemy.js';
 
 export default class Game extends Phaser.Scene {
     constructor() {
@@ -11,6 +11,31 @@ export default class Game extends Phaser.Scene {
 
 
     create() {
+
+        // MUSIC
+        this.sound.volume = CONFIG.VOLUME;
+        this.music = this.sound.add('ost', { loop: true });
+        this.music.play();
+
+        // FADE IN
+        this.fadeRect = this.add.rectangle(
+            0, 0,
+            CONFIG.GAME_WIDTH,
+            CONFIG.GAME_HEIGHT,
+            0x000000
+        ).setOrigin(0);
+
+        this.fadeRect.setDepth(9999);
+
+        this.tweens.add({
+            targets: this.fadeRect,
+            alpha: 0,
+            duration: 3000,
+            ease: 'Quad.easeIn',
+            onComplete: () => {
+                this.fadeRect.destroy();
+            }
+        });
 
         // BACKGROUND
         this.backgrounds = [
@@ -60,15 +85,22 @@ export default class Game extends Phaser.Scene {
             defaultKey: 'bullet'
         });
 
-        // Input
+        // INPUT
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keyZ = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         this.keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
+        // ENEMIES
+        this.spawnMiniboss = null;
 
         this.createEnemies();
         this.setCollisions();
         this.createGUI();
+
+        this.events.once('shutdown', () => {
+            this.music.stop();
+            this.time.clearPendingEvents(); // also clears timers
+        });
     }
 
     update(time, delta) {
@@ -88,7 +120,7 @@ export default class Game extends Phaser.Scene {
 
         this.player.update(this.cursors);
 
-        this.spawnEnemies();
+        //this.spawnEnemies();
         this.updateGUI();
     }
 
@@ -123,6 +155,16 @@ export default class Game extends Phaser.Scene {
             maxSize: CONFIG.ENEMY_POOL_SIZE
         });
 
+        // Minibosses
+        this.miniboss = [];
+
+        // Reimu
+        this.miniboss[0] = this.physics.add.group({
+            classType: Reimu,
+            runChildUpdate: true,
+            maxSize: 1
+        });
+
         this.enemyBullets = [];
 
         // Small bullets
@@ -141,29 +183,89 @@ export default class Game extends Phaser.Scene {
             defaultKey: 'bullet1'
         })
 
-        // Enemy delays
-        this.enemyDelay = [];
-        this.nextEnemyAt = [];
 
-        this.enemyDelay[0] = 1000;
-        this.enemyDelay[1] = 5000;
-        this.enemyDelay[2] = 9000;
-        this.enemyDelay[3] = 8000;
+        // Miniboss bullets
+        this.enemyBullets[2] = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true,
+            maxSize: CONFIG.BULLET_POOL_SIZE * 2,
+            defaultKey: 'bullet2'
+        })
+
+        // Clefairy bullets
+        this.enemyBullets[3] = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true,
+            maxSize: CONFIG.BULLET_POOL_SIZE,
+            defaultKey: 'bullet3'
+        })
+
+        // Enemy delays
+        this.enemyDelay = [5000, 10000, 12000, 15000];
+        this.enemyCount = [4, 1, 1, 1];
+        this.enemyTimer = [];
+
+
+        for (let i = 0; i < this.enemies.length; i++) {
+            // Store each timer in the array
+            this.enemyTimer[i] = this.time.addEvent({
+                delay: this.enemyDelay[i],
+                callback: () => {
+                    this.spawnEnemy(this.enemies[i], this.enemyCount[i]);
+                },
+                callbackScope: this,
+                loop: true
+            });
+        }
+
+        this.phase = 1;
+        this.difficultyTimer = this.time.addEvent({
+            delay: 20000,
+            callback: () => {
+                this.phase++;
+                this.increaseDifficulty();
+                if (this.phase % 5 === 0) this.chooseMiniboss();
+            },
+            loop: true
+        });
     }
 
-    spawnEnemies() {
-        for (let i = 0; i < this.enemies.length; i++) {
-            if (this.nextEnemyAt[i] === undefined) {
-                this.nextEnemyAt[i] = 0;
+
+    spawnEnemy(type, count = 1) {
+        if (count > 1) {
+            for (let i = 0; i < count; i++) {
+                this.time.delayedCall(i * Phaser.Math.Between(500, count * 500), () => {
+                    const enemy = type.get();
+                    if (enemy) {
+                        enemy.spawn(Phaser.Math.Between(10, CONFIG.GAME_WIDTH - 10), -5);
+                    }
+                });
             }
-            if (this.time.now > this.nextEnemyAt[i]) {
-                const enemy = this.enemies[i].get();
-                if (enemy) {
-                    enemy.spawn(Phaser.Math.Between(10, CONFIG.GAME_WIDTH - 10), -5);
-                    this.nextEnemyAt[i] = this.time.now + this.enemyDelay[i];
-                }
+        } else {
+            const enemy = type.get();
+            if (enemy) {
+                enemy.spawn(Phaser.Math.Between(10, CONFIG.GAME_WIDTH - 10), -5);
             }
         }
+
+    }
+
+    increaseDifficulty() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            // timer -3%
+            let max = this.enemyTimer[i].delay * 0.96;
+            this.enemyTimer[i].reset({
+                delay: Math.max(this.enemyDelay[i] / 50, max),
+                callback: this.enemyTimer[i].callback,
+                loop: true
+            })
+        }
+
+    }
+
+    chooseMiniboss() {
+        // i'll add more....
+        this.spawnEnemy(this.miniboss[0], 1);
     }
 
     setCollisions() {
@@ -171,8 +273,7 @@ export default class Game extends Phaser.Scene {
         for (let i = 0; i < this.enemies.length; i++) {
             // Player bullets VS enemies
             this.physics.add.overlap(this.bullets, this.enemies[i], (bullet, enemy) => {
-                bullet.setActive(false);
-                bullet.setVisible(false);
+                bullet.destroy();
 
                 this.enemyHit(enemy);
             });
@@ -185,11 +286,18 @@ export default class Game extends Phaser.Scene {
             });
         }
 
+        // Miniboss vs player bullets
+        this.physics.add.overlap(this.bullets, this.miniboss[0], (bullet, enemy) => {
+            bullet.destroy();
+
+            this.enemyHit(enemy);
+        });
+
+
         // Player VS enemy bullets
         for (let i = 0; i < this.enemyBullets.length; i++) {
             this.physics.add.overlap(this.player, this.enemyBullets[i], (player, bullet) => {
-                bullet.setActive(false);
-                bullet.setVisible(false);
+                bullet.destroy();
 
                 this.playerHit();
             });

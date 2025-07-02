@@ -14,14 +14,18 @@ export default class Preloader extends Phaser.Scene {
         // SPRITES
         this.load.image('player', 'player.png');
 
-        this.load.image('bullet', 'bullet.png')
+        this.load.image('bullet', 'bullet.png');
         this.load.image('bullet0', 'bullet0.png');
-        this.load.image('bullet1', 'bullet1.png')
+        this.load.image('bullet1', 'bullet1.png');
+        this.load.image('bullet2', 'bullet2.png');
+        
+        this.load.image('bullet3', 'bullet3.png');
 
         this.load.image('enemy', 'pom.png');
         this.load.image('bunny', 'bunny.png');
         this.load.image('ufo', 'ufo.png');
         this.load.image('clefairy', 'clefairy.png');
+        this.load.image('reimu', 'reimu.png');
 
         // ANIMATIONS
         this.load.spritesheet('explosion', 'explosion.png', {
@@ -35,6 +39,7 @@ export default class Preloader extends Phaser.Scene {
         this.load.audio('select', 'audio/select00.wav');
         this.load.audio('explosion', 'audio/explosion.wav');
         this.load.audio('shoot', 'audio/gun.wav');
+        this.load.audio('ost', 'audio/ost.m4a')
 
         // BACKGROUNDS
         this.load.image('bg_cloud_far', 'bg_cloud_far.png');

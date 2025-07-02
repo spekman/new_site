@@ -12,7 +12,10 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     fire(x, y, speed = CONFIG.BULLET_SPEED, angle = -Math.PI / 2) {
+        this.setActive(true);
+        this.setVisible(true);
         this.setPosition(x, y);
+        this.body.enable = true;
         //this.setRotation(angle);
 
         const vx = Math.cos(angle) * speed;
@@ -20,8 +23,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
 
         this.setVelocity(vx, vy);
 
-        this.setActive(true);
-        this.setVisible(true);
+        
     }
 
 

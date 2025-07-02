@@ -16,6 +16,7 @@ const CONFIG = {
   ENEMY_POOL_SIZE: 10,
 
   SCROLL_SPEED: 30,
+  VOLUME: 0.2,
 
   DEBUG: false
 };
