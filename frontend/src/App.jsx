@@ -46,9 +46,7 @@ export default function App() {
         <Window title='leaderboard' onClose={() => setShowLeaderboard(false)} style={{ transform: 'translate(100px, 300px)' }}>
           <Leaderboard />
         </Window>
-      )
-
-      }
+      )}
 
 
       {showGame && (
@@ -66,9 +64,7 @@ export default function App() {
             }}
           />
         </Window>
-      )
-
-      }
+      )}
 
 
       {showSettings && (
@@ -138,9 +134,7 @@ export default function App() {
           </div>
 
         </Window>
-      )
-
-      }
+      )}
 
       <TaskBar />
 

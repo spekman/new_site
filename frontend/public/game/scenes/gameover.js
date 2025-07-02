@@ -23,6 +23,8 @@ export default class GameOver extends Phaser.Scene {
 
     create() {
 
+        this.sound.volume = CONFIG.VOLUME;
+
         this.add.tileSprite(0,0, CONFIG.GAME_WIDTH, CONFIG.GAME_HEIGHT, 'gameover_bg').setOrigin(0);
         this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,DOWN,Z,ENTER,ESC,SHIFT');
 
