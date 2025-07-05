@@ -57,7 +57,7 @@ export class Bunny extends Enemy {
         this.speedX = 25;
         this.scene = scene;
         this.maxHp = 3;
-        this.shootCooldown = 3000;
+        this.shootCooldown = 4000;
         this.hp = this.maxHp;
     }
 
@@ -89,8 +89,8 @@ export class Bunny extends Enemy {
 
     shoot() {
         const centerAngle = Phaser.Math.Angle.Between(this.x, this.y, this.scene.player.x, this.scene.player.y);
-        const spread = Phaser.Math.DegToRad(30);
-        const count = 4;
+        const spread = Phaser.Math.DegToRad(45);
+        const count = 5;
 
         for (let i = 0; i < count; i++) {
             const offset = spread * (i / (count - 1) - 0.5);
@@ -109,7 +109,7 @@ export class UFO extends Enemy {
         super(scene, 'ufo');
         this.speed = 10;
         this.scene = scene;
-        this.maxHp = 8;
+        this.maxHp = 7;
         this.hp = this.maxHp;
         this.shootCooldown = 500;
     }
@@ -136,7 +136,7 @@ export class Clefairy extends Enemy {
         super(scene, 'clefairy');
         this.speed = 10;
         this.scene = scene;
-        this.maxHp = 8;
+        this.maxHp = 7;
         this.hp = this.maxHp;
         this.shootCooldown = 2500;
 
@@ -193,7 +193,7 @@ export class Reimu extends Enemy {
         super(scene, 'reimu');
         this.speed = 20;
         this.scene = scene;
-        this.maxHp = 70;
+        this.maxHp = 50;
         this.hp = this.maxHp;
         this.shootCooldown = 1100;
     }

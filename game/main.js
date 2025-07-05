@@ -9,10 +9,12 @@ const config = {
   type: Phaser.AUTO,
   width: CONFIG.GAME_WIDTH,
   height: CONFIG.GAME_HEIGHT,
-  zoom: CONFIG.PIXEL_RATIO,
+  scale: {
+        mode: Phaser.Scale.FIT,
+        parent: 'game'
+    },
   pixelArt: true,
 
-  parent: 'game',
   backgroundColor: '#000000',
   physics: {
     default: 'arcade',
