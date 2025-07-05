@@ -6,13 +6,13 @@
     border-top: 2px solid white;
     border-bottom: 2px solid gray;
     padding: 2px 4px;
-    height: 28px;
+    max-height: 28px;
     font-family: "Pixelated MS Sans Serif", sans-serif;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: 50;
 }
 
 .start-button {
@@ -30,6 +30,19 @@
 
 .start-button img {
     width: 16px;
+    height: 16px;
+}
+
+.taskbar-button {
+    width: 150px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    height: 20px;
+}
+
+.taskbar-button img {
+    padding-right: 5px;
     height: 16px;
 }
 

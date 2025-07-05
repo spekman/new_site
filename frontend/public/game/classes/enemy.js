@@ -57,7 +57,7 @@ export class Bunny extends Enemy {
         this.speedX = 25;
         this.scene = scene;
         this.maxHp = 3;
-        this.shootCooldown = 3000;
+        this.shootCooldown = 4000;
         this.hp = this.maxHp;
     }
 

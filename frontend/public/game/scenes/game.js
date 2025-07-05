@@ -101,6 +101,9 @@ export default class Game extends Phaser.Scene {
             this.music.stop();
             this.time.clearPendingEvents(); // also clears timers
         });
+
+
+        
     }
 
     update(time, delta) {
@@ -109,6 +112,7 @@ export default class Game extends Phaser.Scene {
         this.backgrounds[0].tilePositionY -= CONFIG.SCROLL_SPEED * 0.2 * delta / 1000;
         this.backgrounds[2].tilePositionY -= CONFIG.SCROLL_SPEED * 0.5 * delta / 1000;
         this.backgrounds[3].tilePositionY -= CONFIG.SCROLL_SPEED * 1.0 * delta / 1000;
+
 
         if (this.keyESC.isDown) {
             this.scene.start('Menu', { score: this.score });
@@ -127,7 +131,7 @@ export default class Game extends Phaser.Scene {
     createEnemies() {
         this.enemies = []
 
-        // Generic enemy (Pom)
+        // Generic enemy (Toro)
         this.enemies[0] = this.physics.add.group({
             classType: Enemy,
             runChildUpdate: true,
@@ -201,8 +205,8 @@ export default class Game extends Phaser.Scene {
         })
 
         // Enemy delays
-        this.enemyDelay = [5000, 10000, 12000, 15000];
-        this.enemyCount = [4, 1, 1, 1];
+        this.enemyDelay = [5000, 10000, 12000, 17000];
+        this.enemyCount = [3, 1, 1, 1];
         this.enemyTimer = [];
 
 
@@ -218,13 +222,14 @@ export default class Game extends Phaser.Scene {
             });
         }
 
-        this.phase = 1;
+        this.phase = 0;
         this.difficultyTimer = this.time.addEvent({
             delay: 20000,
             callback: () => {
                 this.phase++;
                 this.increaseDifficulty();
-                if (this.phase % 5 === 0) this.chooseMiniboss();
+                if (this.phase % 4 === 0) this.chooseMiniboss();
+                if (this.phase % 5 === 0 && this.phase > 5) this.enemyCount[0] += 1;
             },
             loop: true
         });
@@ -252,11 +257,13 @@ export default class Game extends Phaser.Scene {
 
     increaseDifficulty() {
         for (let i = 0; i < this.enemies.length; i++) {
-            // timer -3%
+            // timer -6%
             let max = this.enemyTimer[i].delay * 0.94;
             this.enemyTimer[i].reset({
                 delay: Math.max(this.enemyDelay[i] / 50, max),
-                callback: this.enemyTimer[i].callback,
+                callback: () => {
+                    this.spawnEnemy(this.enemies[i], this.enemyCount[i]);
+                },
                 loop: true
             })
         }

@@ -1,0 +1,13 @@
+.about {
+  text-align: center;
+  padding-right: 10px;
+}
+
+.about ul {
+  justify-items: flex-start;
+}
+
+.about img {
+  float: left;
+  height: 60px;
+}

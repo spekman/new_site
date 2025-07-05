@@ -1,144 +1,120 @@
-import Leaderboard from './components/Leaderboard/Leaderboard.jsx';
-import Window from './components/Window/Window.jsx';
-import Settings from './components/Settings/Settings.jsx';
-import DesktopIcon from './components/DesktopIcon/DesktopIcon.jsx';
-import TaskBar from './components/TaskBar/TaskBar.jsx';
-import React, { useState } from 'react';
+import React from 'react';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 
-import './styles/App.css'
+import TaskBar from './components/Taskbar/TaskBar.jsx';
+import IframeWindow from './components/Iframe/IframeWindow.jsx';
+import Settings from './components/Settings/Settings.jsx';
+import About from './components/About/About.jsx';
+import Leaderboard from './components/Leaderboard/Leaderboard.jsx';
+import DesktopIcon from './components/DesktopIcon/DesktopIcon.jsx';
+import WindowManager from './components/WindowManager/WindowManager.jsx';
+
+import './styles/App.css';
+import './styles/crt.css'
 
 export default function App() {
-  const [gameUrl, setGameUrl] = useState('/new_site/game/index.html');
-  const [showSettings, setShowSettings] = useState(false);
-  const [showGame, setShowGame] = useState(true);
-  const [showAbout, setShowAbout] = useState(true);
-  const [showLeaderboard, setShowLeaderboard] = useState(true);
-
-
-  const icons = [
-    { label: 'new game', icon: 'assets/favicon.png', action: () => setShowGame(true) },
-    { label: 'game config', icon: 'assets/accessibility.png', action: () => setShowSettings(true) },
-    { label: 'about', icon: 'assets/notepad.png', action: () => setShowAbout(true) },
-    { label: 'leaderboard', icon: 'assets/leaderboard.png', action: () => setShowLeaderboard(true) }
+  const navigate = useNavigate();
+  const windowDefs = [
+    {
+      id: 'settings',
+      title: 'System Settings',
+      icon: 'accessibility.png',
+      component: Settings,
+      style: {
+        x: 100,
+        y: 250,
+        width: 160,
+        height: 160
+      }
+    },
+    {
+      id: 'about',
+      title: 'About',
+      icon: 'notepad.png',
+      component: About,
+      style: {
+        x: 800,
+        y: 50,
+        width: 250,
+        height: 500
+      }
+    },
+    {
+      id: 'leaderboard',
+      title: 'Leaderboard',
+      icon: 'leaderboard.png',
+      component: Leaderboard,
+      style: {
+        x: 100,
+        y: 50,
+        width: 190,
+        height: 240
+      }
+    },
   ];
+  const iframeApps = [
+    { id: 'paint', label: 'Paint', icon: 'paint.png' },
+    { id: 'game', label: 'Game', icon: 'favicon.png' },
 
-
-  // Gets the size of the game canvas  
-  function getGameSize() {
-    const params = new URLSearchParams(gameUrl.split('?')[1]);
-    const scale = Number(params.get('scale')) || 2;
-    return {
-      width: 160 * scale,
-      height: 160 * scale
-    };
-  }
-  const { width, height } = getGameSize();
-
+  ];
   return (
-    <div className="desktop">
-      <div className="desktop-icons">
-        {icons.map((i, index) => (
-          <DesktopIcon key={index} {...i} onClick={i.action} />
-        ))}
-      </div>
+    <div className='desktop'>
+      <WindowManager windowDefs={windowDefs}>
+        {({ windows, openWindow, closeWindow, bringToFront }) => (
+          <>
+            <div className="desktop-icons">
+              {/* Native windows */}
+              {windows
+                .filter(w => !w.id.startsWith('iframe-')) 
+                .map(w => (
+                  <DesktopIcon
+                    key={w.id}
+                    label={w.title}
+                    icon={`assets/${w.icon}`}
+                    onClick={() => openWindow(w.id)}
+                  />
+                ))}
 
-      {showLeaderboard && (
-        <Window title='leaderboard' onClose={() => setShowLeaderboard(false)} style={{ transform: 'translate(100px, 300px)' }}>
-          <Leaderboard />
-        </Window>
-      )}
-
-
-      {showGame && (
-        <Window title='new_game' onClose={() => setShowGame(false)} style={{ transform: 'translate(300px, 50px)' }}>
-          <iframe
-            key={gameUrl}
-            src={gameUrl}
-            width={width}
-            height={height}
-            style={{
-              border: 'none',
-              ...(gameUrl.includes('filter=on') && {
-                filter: 'contrast(130%) saturate(120%) brightness(0.95)',
-              })
-            }}
-          />
-        </Window>
-      )}
-
-
-      {showSettings && (
-        <Settings
-          onClose={() => setShowSettings(false)}
-          applySettings={(url) => {
-            setGameUrl(url);
-          }}
-        />
-      )}
-
-      {showAbout && (
-        <Window title='about' onClose={() => setShowAbout(false)} style={{ transform: 'translate(850px, 50px)' }}>
-          <div className="contain">
-            <img src='assets/pochitchi.webp'/>
-          <p>This website was made using react. The leaderboard's database was made with mongodb atlas,
-            with the backend hosted on railway.
-            The game was made in Phaser! Most of the sprites were made by me
-          </p>
-
-            <div className='sunken-panel'>
-              <table className='interactive' width={'100%'}>
-                <thead>
-                  <tr>
-                    <th colSpan={2}>Controls</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Arrow keys</td>
-                    <td>Move</td>
-                  </tr>
-                  <tr>
-                    <td>Z</td>
-                    <td>Shoot/Confirm</td>
-                  </tr>
-                  <tr>
-                    <td>Enter</td>
-                    <td>Confirm</td>
-                  </tr>
-                  <tr>
-                    <td>Shift</td>
-                    <td>Slow move</td>
-                  </tr>
-                  <tr>
-                    <td>ESC</td>
-                    <td>Exit to menu</td>
-                  </tr>
-                </tbody>
-              </table>
+              {/* iframe windows */}
+              {iframeApps.map(app => (
+                <DesktopIcon
+                  key={`iframe-${app.id}`}
+                  label={app.label}
+                  icon={`assets/${app.icon}`} 
+                  onClick={() => {
+                    if (windows.some(w => w.id === `iframe-${app.id}` && w.visible)) {
+                      bringToFront(`iframe-${app.id}`);
+                    } else {
+                      navigate(`/app/${app.id}`);
+                    }
+                  }}
+                />
+              ))}
             </div>
-            <p>if you don't want to add your score to localstorage you can press ESC to skip the score submission</p>
 
-            <p><strong>To-do</strong></p>
-            <ul>
-              <li>add music</li>
-              <li>new enemies</li>
-              <li>working game filters</li>
-              <li>draggable windows</li>
-              <li>add webpage</li>
-              <li>guestbook??</li>
-              <li>make leaderboard look better</li>
-              <li>better  taskbar</li>
-            </ul>
+            <TaskBar
+              windows={windows.filter(w => w.visible)}
+              onClickWindow={bringToFront}
+            />
 
-          <p>version 1 . 0</p>
-          </div>
+            <Routes>
 
-        </Window>
-      )}
+              <Route path="/" element={null} />
+              <Route path="/app/:appId" element={
+                <IframeWindow
+                  openWindow={openWindow}
+                  closeWindow={closeWindow}
+                  windows={windows}
+                  bringToFront={bringToFront}
+                />
+              } />
+            </Routes>
+          </>
+        )}
+      </WindowManager>
 
-      <TaskBar />
 
-
+      <div className="container"><div className="screen"></div></div>
     </div>
   );
 }

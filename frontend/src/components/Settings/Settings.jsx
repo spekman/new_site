@@ -1,51 +1,44 @@
-import Window from '../Window/Window.jsx';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function Settings({ onClose, applySettings }) {
-    const [scale, setScale] = useState(1);
-    const [filter, setFilter] = useState(false);
+export default function Settings() {
+    const [filterEnabled, setFilterEnabled] = useState(true);
 
-   const handleApply = () => {
-    const query = new URLSearchParams({
-      scale,
-      filter: filter ? 'on' : 'off',
-    }).toString();
+    // Initialize state from current DOM class
+    useEffect(() => {
+        const appContainer = document.getElementsByClassName('container')[0];
+        setFilterEnabled(!appContainer.classList.contains('hidden'));
+    }, []);
 
-    applySettings(`/new_site/game/index.html?${query}`);
-    onClose(); // close the settings window
-  };
+    const handleApply = () => {
+        const appContainer = document.getElementsByClassName('container')[0];
+        if (filterEnabled) {
+            appContainer.classList.remove('hidden');
+        } else {
+            appContainer.classList.add('hidden');
+        }
+    };
 
     return (
-        <Window title="settings" onClose={onClose} style={{transform: 'translate(100px, 100px)'}}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <fieldset value={scale} onChange={e => setScale(Number(e.target.value))}>
-                    <legend>Scale</legend>
-                    <div className="field-row">
-                        <input value={1} id="1x" type="radio" name="scale" />
-                        <label htmlFor="1x">1x (160x160)</label>
-                    </div>
-                    <div className="field-row">
-                        <input value={2} id="2x" type="radio" name="scale" />
-                        <label htmlFor="2x">2x (320x320)</label>
-                    </div>
-                    <div className="field-row">
-                        <input value={3} id="3x" type="radio" name="scale" />
-                        <label htmlFor="3x">3x (480x480)</label>
-                    </div>
-                </fieldset>
-                
+        <div className="settings" style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '8px',
+            padding: '8px'
+        }}>
+            <div className="field-row" style={{ alignItems: 'center' }}>
+                <input
+                    id="filter"
+                    type="checkbox"
+                    checked={filterEnabled}
+                    onChange={(e) => setFilterEnabled(e.target.checked)}
+                    style={{ marginRight: '8px' }}
+                />
+                <label htmlFor="filter">CRT Filter</label>
+            </div>
 
-                
-                    <input id="filter"
-                        type="checkbox"
-                        checked={filter}
-                        onChange={e => setFilter(e.target.checked)}
-                    />
-                   <label htmlFor='filter'> Enable CRT Filter (To-do)
-                </label>
-
+            <div className="field-row" style={{ justifyContent: 'flex-end' }}>
                 <button onClick={handleApply}>OK</button>
             </div>
-        </Window>
+        </div>
     );
 }

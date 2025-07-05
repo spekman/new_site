@@ -31,21 +31,3 @@
   border: none;
   image-rendering: pixelated;
 }
-
-.contain {
-  max-width: 210px;
-  max-height: 320px;
-  white-space: pre-wrap;
-  text-align: center;
-  overflow-y: scroll;
-  padding-right: 10px;
-}
-
-.contain ul {
-  justify-items: flex-start;
-}
-
-.contain img {
-  float: left;
-  height: 60px;
-}
